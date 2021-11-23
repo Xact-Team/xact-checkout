@@ -39,6 +39,7 @@ export class SdkController {
     try {
       return await this.service.sellNFT(opts)
     } catch (e) {
+      console.log('err selling nft', e);
       throw new HttpException({
         error: e,
       }, HttpStatus.BAD_REQUEST)

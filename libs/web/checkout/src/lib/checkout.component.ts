@@ -19,7 +19,7 @@ import { HomeTileComponent } from '../../../home/ui/tile/src/lib/home-tile.compo
 })
 export class CheckoutComponent {
   tokenId: string
-  nft$!: Observable<NFTForSale & { media: string } | null>
+  nft$!: Observable<any>
   type!: string
   emptyNFT = false
 

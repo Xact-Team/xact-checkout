@@ -48,7 +48,7 @@ export class HomeTileComponent implements OnInit {
       return 'video'
     } else if (link && typeof link === 'string' && link.includes('application/pdf')) {
       return 'file'
-    } else if (link && typeof link === 'string' && link.includes('image')) {
+    } else if (link && typeof link === 'string' && (link.includes('image') || link.includes('gif'))) {
       return 'image'
     } else if (link && typeof link === 'string' && (link.includes('model/gltf-binary')
       || link.includes('.glb') || link.includes('.gltf') || link.includes('.usdz'))) {

@@ -47,6 +47,7 @@ export class SdkService {
     if (!this.client) {
       await this.initClient()
     }
+    console.log('opts', opts);
     return this.client.sellNFT(opts)
   }
 

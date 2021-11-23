@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core'
 import { DialogService } from '@ngneat/dialog'
 import { ConnectComponent } from './connect.component'
 import { HttpClient } from '@angular/common/http'
-import { map, Observable, of, switchMap } from 'rxjs'
+import { catchError, map, Observable, of, switchMap } from 'rxjs'
 import { Socket } from 'ngx-socket-io'
 import {
   NFTForSale,
@@ -107,11 +107,16 @@ export class ConnectService {
           return of(null)
         }
         return this.http.get(res.nft.url).pipe(
+          catchError(err => {
+            return of({
+              ...res,
+            })
+          }),
           map(
             (nft: any) => {
               return {
                 ...res,
-                media: nft.photo,
+                media: nft.photo ? nft.photo : nft.nft.url,
               }
             },
           ),

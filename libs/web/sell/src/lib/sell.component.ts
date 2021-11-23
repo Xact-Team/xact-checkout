@@ -27,6 +27,7 @@ export class SellComponent {
   sellForm: FormGroup = this.fb.group({
     hbarAmount: ['', Validators.required],
     quantity: ['', Validators.required],
+    // accountIds: [''],
   })
 
   nft!: NFT
@@ -62,7 +63,7 @@ export class SellComponent {
       await this.connectService.sellNFT({
         fromAccountId: user.accountId,
         quantity: this.sellForm.get('quantity')?.value,
-        hbarAmount: this.sellForm.get('hbarAmount')?.value,
+        hbarAmount: this.sellForm.get('hbarAmount')?.value || 0,
         tokenId: this.nft.tokenId,
       })
       await this.spinner.hide()
