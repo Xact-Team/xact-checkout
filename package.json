@@ -64,6 +64,7 @@
     "immer": "^9.0.5",
     "mime": "^2.5.2",
     "nest-router": "^1.0.9",
+    "ng-multiselect-dropdown": "^0.3.7",
     "ng2-tooltip-directive": "^2.10.3",
     "ngrx-immer": "^1.0.1",
     "ngx-socket-io": "^4.1.0",

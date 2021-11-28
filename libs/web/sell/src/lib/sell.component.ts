@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core'
+import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 import { Router } from '@angular/router'
 import { ToastrService } from 'ngx-toastr'
@@ -7,21 +7,21 @@ import { UserStore } from '@xact-checkout/shared/data-access/user-store'
 import { RequestService } from '@xact-checkout/shared/ui/waiting-authorization'
 import { NFT, UserAccount } from '@xact-wallet-sdk/client'
 import { NgxSpinnerService } from 'ngx-spinner'
+import { IDropdownSettings } from 'ng-multiselect-dropdown'
 
 @Component({
   selector: 'xact-checkout-sell',
   templateUrl: './sell.component.html',
   styles: [
     `
-        :host {
-            display: block;
-        }
+      :host {
+        display: block;
+      }
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SellComponent {
-
+export class SellComponent implements OnInit {
   vm$ = this.userStore.vm$
 
   sellForm: FormGroup = this.fb.group({
@@ -32,13 +32,20 @@ export class SellComponent {
 
   nft!: NFT
 
-  constructor(private readonly fb: FormBuilder,
-              private readonly toastService: ToastrService,
-              private readonly userStore: UserStore,
-              private readonly spinner: NgxSpinnerService,
-              private readonly requestService: RequestService,
-              private readonly connectService: ConnectService,
-              private readonly router: Router) {
+  //Multiselect dropdown
+  dropdownList: any = []
+  selectedItems = []
+  dropdownSettings: IDropdownSettings = {}
+
+  constructor(
+    private readonly fb: FormBuilder,
+    private readonly toastService: ToastrService,
+    private readonly userStore: UserStore,
+    private readonly spinner: NgxSpinnerService,
+    private readonly requestService: RequestService,
+    private readonly connectService: ConnectService,
+    private readonly router: Router,
+  ) {
     this.nft = { ...this.router.getCurrentNavigation()?.extras.state?.nft }
     if (Object.keys(this.nft).length === 0) {
       this.router.navigateByUrl('/')
@@ -46,6 +53,19 @@ export class SellComponent {
       if (this.nft.forSale) {
         this.sellForm.patchValue({ ...this.nft.forSale })
       }
+    }
+  }
+
+  ngOnInit(): void {
+    //MultiSelect init
+    this.dropdownList = this.nft['nftIds']
+    this.dropdownSettings = {
+      singleSelection: false,
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      itemsShowLimit: 3,
+      allowSearchFilter: true,
+      enableCheckAll: false,
     }
   }
 
@@ -92,5 +112,13 @@ export class SellComponent {
       await this.spinner.hide()
       this.toastService.error(e.error ? e.error.error : 'Sorry an internal error occurred!')
     }
+  }
+
+  onItemSelect(item: any) {
+    console.log(this.selectedItems)
+  }
+
+  onDeSelect(item: any) {
+    console.log(this.selectedItems)
   }
 }
