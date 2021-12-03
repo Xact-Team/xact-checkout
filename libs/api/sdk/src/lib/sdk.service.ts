@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { AppConfig } from '@xact-checkout/api/configuration'
 import { InjectAppConfig } from '@xact-checkout/api/config'
 import { EventEmitter2 } from '@nestjs/event-emitter'
-import { Client, NFTForSale, RefreshAccountDTO, ScopeEnum, SellNFTDto } from '@xact-wallet-sdk/client'
+import { Client, DebugLevel, NFTForSale, RefreshAccountDTO, ScopeEnum, SellNFTDto } from '@xact-wallet-sdk/client'
 
 @Injectable()
 export class SdkService {
@@ -14,7 +14,14 @@ export class SdkService {
 
   /* Init Client */
   async initClient() {
-    this.client = new Client({ apiKey: this.appConfig.sdkApi })
+    this.client = new Client({
+      apiKey: this.appConfig.sdkApi,
+      options: {
+        debugLevel: DebugLevel.DEBUG,
+        apiUrl: 'https://api.dev.xact.ac/v1',
+        socketUrl: 'https://api.dev.xact.ac',
+      },
+    })
     await this.client.initConnexion()
     /* Listeners */
     this.listenToAuthEvent()
@@ -47,7 +54,6 @@ export class SdkService {
     if (!this.client) {
       await this.initClient()
     }
-    console.log('opts', opts);
     return this.client.sellNFT(opts)
   }
 
@@ -85,11 +91,11 @@ export class SdkService {
     if (!this.client) {
       await this.initClient()
     }
-    return this.client.deleteNFTFromSale({tokenId, socketId});
+    return this.client.deleteNFTFromSale({ tokenId, socketId })
   }
 
   private listenToRemoveSaleEvent() {
-    this.client.deleteSellNFTValidation().subscribe((nft)=>{
+    this.client.deleteSellNFTValidation().subscribe((nft) => {
       this.eventEmitter.emit('xactCheckout.remove', nft)
     })
   }
