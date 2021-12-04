@@ -36,6 +36,9 @@
               <strong>Creator:</strong> {{nft?.nft?.creator}}<br>
 
               <strong>Token Id:</strong> {{nft?.nft?.tokenId}}<br>
+              <ng-container *ngIf='nft?.nft?.royalties'>
+                <strong>Royalties:</strong> {{nft?.nft?.royalties.numerator}}% ( Fallback Fees: {{nft?.nft?.royalties.fallbackFee}} )<br>
+              </ng-container>
 
               <strong>Total number of copies:</strong> {{nft?.quantity}}
             </p>

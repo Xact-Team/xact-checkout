@@ -20,7 +20,7 @@ export const xactCheckoutShellRoutes: Routes = [
     ],
   },
   {
-    path: 'checkout/:tokenId',
+    path: 'checkout/:tokenId/:nftId',
     loadChildren: () =>
       import('@xact-checkout/web/checkout').then((m) => m.WebCheckoutModule),
   },

@@ -1,7 +1,8 @@
-import { Component, ChangeDetectionStrategy, Input, EventEmitter, Output, OnInit } from '@angular/core'
+import { Component, Input, EventEmitter, Output, OnInit } from '@angular/core'
 import { NFT } from '@xact-wallet-sdk/client'
 import { HttpClient } from '@angular/common/http'
 import { map, Observable, of } from 'rxjs'
+import { IDropdownSettings } from 'ng-multiselect-dropdown'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 const mime = require('mime')
@@ -12,20 +13,35 @@ const mime = require('mime')
   styles: [
     ``,
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeTileComponent implements OnInit {
-  @Input() nft!: NFT
+  @Input() nft!: any;
   @Output() sellNFT: EventEmitter<NFT> = new EventEmitter<NFT>()
 
   media$!: Observable<string>
   type: string | null = null
+  //Multiselect dropdown
+  dropdownList: any = []
+  selectedItems: any = [];
+  dropdownSettings: IDropdownSettings = {
+    singleSelection: true,
+    idField: "item_id",
+    textField: "item_text",
+    selectAllText: "Select All",
+    unSelectAllText: "UnSelect All",
+    itemsShowLimit: 3,
+    allowSearchFilter: true,
+  }
 
-  constructor(private readonly http: HttpClient) {
+  constructor(private readonly http: HttpClient,) {
   }
 
 
   ngOnInit() {
+    if (this.nft.nftIdsForSale) {
+      this.selectedItems.push(this.nft.nftIdsForSale[0].nftId);
+      this.dropdownList = this.nft.nftIdsForSale.map((el: any) => el.nftId);
+    }
     if (this.nft.cid) {
       this.media$ = this.http.get(this.nft.url)
         .pipe(
@@ -36,6 +52,11 @@ export class HomeTileComponent implements OnInit {
             }
           }),
         )
+    } else if (this.nft.url) {
+      HomeTileComponent.getTypeNft(this.nft.url).then(type => {
+        this.type = type;
+        this.media$ = of(this.nft.url);
+      });
     } else {
       this.media$ = of('https://images.unsplash.com/photo-1506792006437-256b665541e2?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;ixlib=rb-1.2.1&amp;auto=format&amp;fit=crop&amp;w=334&amp;q=80')
     }

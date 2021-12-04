@@ -1,47 +1,47 @@
-<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="square-jelly-box" [fullScreen]="true">
-  <p style="color: white">Loading...</p>
+<ngx-spinner bdColor='rgba(0, 0, 0, 0.8)' size='medium' color='#fff' type='square-jelly-box' [fullScreen]='true'>
+  <p style='color: white'>Loading...</p>
 </ngx-spinner>
-<xact-checkout-page *ngIf="vm$ | async as vm">
-  <ng-container *ngIf="vm.user">
+<xact-checkout-page *ngIf='vm$ | async as vm'>
+  <ng-container *ngIf='vm.user'>
     <swal
       #deleteSellSwal
-      title="Are you sure to delete the sell of this NFT ?"
-      text="A request will be sent to your account on Xact Wallet. Your NFT will be withdraw to your account"
-      icon="question"
-      [showCancelButton]="true"
-      [focusCancel]="true"
-      (confirm)="delete(vm.user)"
+      title='Are you sure to delete the sell of this NFT ?'
+      text='A request will be sent to your account on Xact Wallet. Your NFT will be withdraw to your account'
+      icon='question'
+      [showCancelButton]='true'
+      [focusCancel]='true'
+      (confirm)='delete(vm.user)'
     ></swal>
     <swal
       #sellSwal
-      title="Are you sure to sell this NFT ?"
-      text="A request will be sent to your account on Xact Wallet and the NFT will be transferred to Xact Checkout escrow account. You will be able to withdraw your NFT to your account whenever you want"
-      icon="question"
-      [showCancelButton]="true"
-      [focusCancel]="true"
-      (confirm)="sell(vm.user)"
+      title='Are you sure to sell this NFT ?'
+      text='A request will be sent to your account on Xact Wallet and the NFT will be transferred to Xact Checkout escrow account. You will be able to withdraw your NFT to your account whenever you want'
+      icon='question'
+      [showCancelButton]='true'
+      [focusCancel]='true'
+      (confirm)='sell(vm.user)'
     ></swal>
-    <div class="bg-white dark:bg-gray-800 px-4 py-6 sm:p-6 rounded-2xl">
-      <div class="container px-4 mx-auto">
-        <form [formGroup]="sellForm">
+    <div class='bg-white dark:bg-gray-800 px-4 py-6 sm:p-6 rounded-2xl'>
+      <div class='container px-4 mx-auto'>
+        <form [formGroup]='sellForm'>
           <div>
             <div>
               <div
-                class="
+                class='
                   mt-6
                   sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5
-                "
+                '
               >
                 <label
-                  class="block text-sm font-medium leading-5 dark:text-white text-gray-700 sm:mt-px sm:pt-2"
-                  for="name"
+                  class='block text-sm font-medium leading-5 dark:text-white text-gray-700 sm:mt-px sm:pt-2'
+                  for='name'
                 >
                   Name of the NFT
                 </label>
-                <div class="mt-1 sm:mt-0 sm:col-span-2">
-                  <div class="max-w-lg flex rounded-md shadow-sm">
+                <div class='mt-1 sm:mt-0 sm:col-span-2'>
+                  <div class='max-w-lg flex rounded-md shadow-sm'>
                     <input
-                      class="
+                      class='
                         flex-1
                         font-bold
                         form-input
@@ -54,26 +54,26 @@
                         duration-150
                         ease-in-out
                         sm:text-sm sm:leading-5
-                      "
-                      id="name"
+                      '
+                      id='name'
                       disabled
-                      value="{{ nft?.name }}"
+                      value='{{ nft?.name }}'
                     />
                   </div>
                 </div>
               </div>
-              <div class="mt-6 sm:mt-5">
-                <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+              <div class='mt-6 sm:mt-5'>
+                <div class='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5'>
                   <label
-                    class="block text-sm font-medium leading-5 dark:text-white text-gray-700 sm:mt-px sm:pt-2"
-                    for="creator"
+                    class='block text-sm font-medium leading-5 dark:text-white text-gray-700 sm:mt-px sm:pt-2'
+                    for='creator'
                   >
                     Creator
                   </label>
-                  <div class="mt-1 sm:mt-0 sm:col-span-2">
-                    <div class="max-w-lg flex rounded-md shadow-sm">
+                  <div class='mt-1 sm:mt-0 sm:col-span-2'>
+                    <div class='max-w-lg flex rounded-md shadow-sm'>
                       <input
-                        class="
+                        class='
                           flex-1
                           form-input
                           font-bold
@@ -86,26 +86,26 @@
                           duration-150
                           ease-in-out
                           sm:text-sm sm:leading-5
-                        "
-                        id="creator"
+                        '
+                        id='creator'
                         disabled
-                        value="{{ nft?.creator }}"
+                        value='{{ nft?.creator }}'
                       />
                     </div>
                   </div>
                 </div>
-                <div class="mt-6 sm:mt-5">
-                  <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                <div class='mt-6 sm:mt-5'>
+                  <div class='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5'>
                     <label
-                      class="block text-sm font-medium leading-5 dark:text-white text-gray-700 sm:mt-px sm:pt-2"
-                      for="supply"
+                      class='block text-sm font-medium leading-5 dark:text-white text-gray-700 sm:mt-px sm:pt-2'
+                      for='supply'
                     >
                       Supply
                     </label>
-                    <div class="mt-1 sm:mt-0 sm:col-span-2">
-                      <div class="max-w-lg flex rounded-md shadow-sm">
+                    <div class='mt-1 sm:mt-0 sm:col-span-2'>
+                      <div class='max-w-lg flex rounded-md shadow-sm'>
                         <input
-                          class="
+                          class='
                             flex-1
                             form-input
                             font-bold
@@ -118,27 +118,27 @@
                             duration-150
                             ease-in-out
                             sm:text-sm sm:leading-5
-                          "
-                          id="supply"
+                          '
+                          id='supply'
                           disabled
-                          value="x{{ nft?.supply }}"
+                          value='x{{ nft?.supply }}'
                         />
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="mt-6 sm:mt-5">
-                  <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                <div class='mt-6 sm:mt-5'>
+                  <div class='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5'>
                     <label
-                      class="block text-sm font-medium leading-5 dark:text-white text-gray-700 sm:mt-px sm:pt-2"
-                      for="category"
+                      class='block text-sm font-medium leading-5 dark:text-white text-gray-700 sm:mt-px sm:pt-2'
+                      for='category'
                     >
                       Category
                     </label>
-                    <div class="mt-1 sm:mt-0 sm:col-span-2">
-                      <div class="max-w-lg flex rounded-md shadow-sm">
+                    <div class='mt-1 sm:mt-0 sm:col-span-2'>
+                      <div class='max-w-lg flex rounded-md shadow-sm'>
                         <input
-                          class="
+                          class='
                             flex-1
                             form-input
                             font-bold
@@ -151,26 +151,26 @@
                             duration-150
                             ease-in-out
                             sm:text-sm sm:leading-5
-                          "
-                          id="category"
+                          '
+                          id='category'
                           disabled
-                          value="{{ nft?.category }}"
+                          value='{{ nft?.category }}'
                         />
                       </div>
                     </div>
                   </div>
-                  <div class="mt-6 sm:mt-5">
-                    <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                  <div class='mt-6 sm:mt-5'>
+                    <div class='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5'>
                       <label
-                        class="block text-sm font-medium leading-5 dark:text-white text-gray-700 sm:mt-px sm:pt-2"
-                        for="description"
+                        class='block text-sm font-medium leading-5 dark:text-white text-gray-700 sm:mt-px sm:pt-2'
+                        for='description'
                       >
                         Description
                       </label>
-                      <div class="mt-1 sm:mt-0 sm:col-span-2">
-                        <div class="max-w-lg flex rounded-md shadow-sm">
+                      <div class='mt-1 sm:mt-0 sm:col-span-2'>
+                        <div class='max-w-lg flex rounded-md shadow-sm'>
                           <textarea
-                            class="
+                            class='
                               flex-1
                               form-input
                               font-bold
@@ -183,67 +183,68 @@
                               duration-150
                               ease-in-out
                               sm:text-sm sm:leading-5
-                            "
-                            id="description"
+                            '
+                            id='description'
                             disabled
-                            value="{{ nft?.description }}"
+                            value='{{ nft?.description?.description }}'
                           ></textarea>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div
-                    class="
-                      mt-6
-                      sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5
-                    "
-                  >
-                    <label
-                      class="block text-sm font-medium leading-5 dark:text-white text-gray-700 sm:mt-px sm:pt-2"
-                      for="name"
-                    >
-                      nftIds
-                    </label>
-                    <div class="mt-1 sm:mt-0 sm:col-span-2">
-                      <ng-multiselect-dropdown
-                        [placeholder]="'Select Tokens'"
-                        [settings]="dropdownSettings"
-                        [data]="dropdownList"
-                        [(ngModel)]="selectedItems"
-                        [ngModelOptions]="{ standalone: true }"
-                        (onSelect)="onItemSelect($event)"
-                        (onDeSelect)="onDeSelect($event)"
-                      ></ng-multiselect-dropdown>
+                  <div class='mt-6 sm:mt-5'>
+                    <div class='sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5'>
+                      <label
+                        class='block text-sm font-medium leading-5 dark:text-white text-gray-700 sm:mt-px sm:pt-2'
+                        for='name'
+                      >
+                        <span *ngIf='!nft.nftIdsForSale'>nftIds you want to sell</span>
+                        <span *ngIf='nft.nftIdsForSale' style='color: red;'>nftIds you want to withdraw</span>
+                      </label>
+                      <div class='mt-1 sm:mt-0 sm:col-span-2'>
+                        <ng-multiselect-dropdown
+                          [settings]='dropdownSettings'
+                          style='color: #5E61E1;'
+                          [placeholder]="'Select Tokens'"
+                          [data]='dropdownList'
+                          [(ngModel)]='selectedItems'
+                          [ngModelOptions]='{ standalone: true }'
+                          (onSelect)="updateItem($event)"
+                          (onSelectAll)="updateItem($event)"
+                          (onDeSelectAll)="updateItem($event)"
+                          (onDeSelect)="updateItem($event)"
+                        ></ng-multiselect-dropdown>
+                      </div>
                     </div>
                   </div>
                   <div
-                    class="
+                    class='
                       mt-6
                       sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5
-                    "
+                    '
                   >
                     <label
-                      class="text-sm font-medium leading-5 dark:text-white text-gray-700 sm:mt-px sm:pt-2 inline-block"
-                      for="unit_price"
+                      class='text-sm font-medium leading-5 dark:text-white text-gray-700 sm:mt-px sm:pt-2 inline-block'
+                      for='unit_price'
                     >
                       Unit Price in Hbar
                       <xact-checkout-icon
-                        size="lg"
-                        icon="info"
-                        class="ml-2"
-                        style="display: inline-block"
-                        placement="top"
-                        tooltip="5% Xact Checkout commission applied on sale, You will receive {{
+                        size='lg'
+                        icon='info'
+                        class='ml-2'
+                        style='display: inline-block'
+                        placement='top'
+                        tooltip='5% Xact Checkout commission applied on sale, You will receive {{
                           hbarAmount ? (hbarAmount - (hbarAmount * 5) / 100).toFixed(2) : 0
-                        }}ℏ"
+                        }}ℏ'
                       ></xact-checkout-icon>
                     </label>
-                    <div class="mt-1 sm:mt-0 sm:col-span-2">
-                      <div class="max-w-lg flex rounded-md shadow-sm">
+                    <div class='mt-1 sm:mt-0 sm:col-span-2'>
+                      <div class='max-w-lg flex rounded-md shadow-sm'>
                         <input
-                          style="border: 3px solid #474cff; color: #474cff"
-                          type="number"
-                          class="
+                          style='border: 3px solid #474cff; color: #474cff'
+                          type='number'
+                          class='
                             flex-1
                             form-input
                             font-bold
@@ -256,33 +257,33 @@
                             duration-150
                             ease-in-out
                             sm:text-sm sm:leading-5
-                          "
-                          id="unit_price"
-                          formControlName="hbarAmount"
+                          '
+                          id='unit_price'
+                          formControlName='hbarAmount'
                         />
                       </div>
                     </div>
                   </div>
                   <div
-                    class="
+                    class='
                       mt-6
                       sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5
-                    "
+                    '
                   >
                     <label
-                      class="block text-sm font-medium leading-5 dark:text-white text-gray-700 sm:mt-px sm:pt-2"
-                      for="quantity"
+                      class='block text-sm font-medium leading-5 dark:text-white text-gray-700 sm:mt-px sm:pt-2'
+                      for='quantity'
                     >
                       Quantity to Sell (Max {{ nft.supply }})
                     </label>
-                    <div class="mt-1 sm:mt-0 sm:col-span-2">
-                      <div class="max-w-lg flex rounded-md shadow-sm">
+                    <div class='mt-1 sm:mt-0 sm:col-span-2'>
+                      <div class='max-w-lg flex rounded-md shadow-sm'>
                         <input
-                          style="border: 3px solid #474cff; color: #474cff"
-                          type="number"
-                          [attr.max]="nft.supply"
-                          min="1"
-                          class="
+                          style='border: 3px solid #474cff; color: #474cff'
+                          type='number'
+                          [attr.max]='nft.supply'
+                          min='1'
+                          class='
                             flex-1
                             form-input
                             font-bold
@@ -295,9 +296,32 @@
                             duration-150
                             ease-in-out
                             sm:text-sm sm:leading-5
-                          "
-                          id="quantity"
-                          formControlName="quantity"
+                          '
+                          id='quantity'
+                          formControlName='quantity'
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class='
+                      mt-6
+                      sm:mt-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5
+                    '
+                  >
+                    <label
+                      class='block text-sm font-medium leading-5 dark:text-white text-gray-700 sm:mt-px sm:pt-2'
+                      for='grouped'
+                    >
+                      Group your NFTs under same QR Code
+                    </label>
+                    <div class='mt-1 sm:mt-0 sm:col-span-2'>
+                      <div class='max-w-lg flex rounded-md shadow-sm'>
+                        <input
+                          style='border: 3px solid #474cff; color: #474cff'
+                          type='checkbox'
+                          id='grouped'
+                          formControlName='isCollection'
                         />
                       </div>
                     </div>
@@ -306,13 +330,13 @@
               </div>
             </div>
           </div>
-          <div class="mt-8 border-t border-gray-200 pt-5">
-            <div class="flex justify-end">
-              <div class="ml-3 inline-flex rounded-md shadow-sm">
+          <div class='mt-8 border-t border-gray-200 pt-5'>
+            <div class='flex justify-end'>
+              <div class='ml-3 inline-flex rounded-md shadow-sm'>
                 <button
-                  type="button"
-                  routerLink="/"
-                  class="
+                  type='button'
+                  routerLink='/'
+                  class='
                     inline-flex
                     items-center
                     mr-4
@@ -327,14 +351,14 @@
                     bg-white
                     hover:bg-gray-50
                     focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500
-                  "
+                  '
                 >
                   Cancel
                 </button>
                 <button
-                  [disabled]="sellForm.invalid"
-                  *ngIf="!nft.forSale; else forSale"
-                  class="
+                  [disabled]='sellForm.invalid'
+                  *ngIf='!nft.nftIdsForSale; else forSale'
+                  class='
                     inline-flex
                     justify-center
                     py-2
@@ -352,16 +376,16 @@
                     transition
                     duration-150
                     ease-in-out
-                  "
-                  (click)="sellSwal.fire()"
+                  '
+                  (click)='sellSwal.fire()'
                 >
                   Sell
-                  <span class="ml-1" *ngIf="hbarAmount">for {{ hbarAmount }} ℏ</span>
+                  <span class='ml-1' *ngIf='hbarAmount'>for {{ hbarAmount }} ℏ</span>
                 </button>
                 <ng-template #forSale>
                   <button
-                    (click)="deleteSellSwal.fire()"
-                    class="
+                    (click)='deleteSellSwal.fire()'
+                    class='
                       inline-flex
                       justify-center
                       py-2
@@ -379,7 +403,7 @@
                       transition
                       duration-150
                       ease-in-out
-                    "
+                    '
                   >
                     Delete
                   </button>

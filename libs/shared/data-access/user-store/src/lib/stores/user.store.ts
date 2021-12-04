@@ -60,7 +60,7 @@ export class UserStore extends ImmerComponentStore<UserState> {
       tap(() => this.updateIsLoading(true)),
       tapResponse((user: UserAccount) => {
         if(user.nft) {
-          user.nft = user.nft.sort((a: NFT, b: NFT) => !!b.forSale as any - (!!a.forSale as any))
+          user.nft = user.nft.sort((a: NFT, b: NFT) => !!b.nftIdsForSale as any - (!!a.nftIdsForSale as any))
         }
         this.updateUser(user)
         localStorage.setItem(LS_USER_KEY, JSON.stringify(user))

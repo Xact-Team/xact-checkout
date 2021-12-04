@@ -89,8 +89,10 @@ export class ConnectService {
     }).toPromise()
   }
 
-  deleteNFT(tokenId: string): Promise<string | undefined> {
-    return this.http.delete<string>(`${environment.API}/sdk/delete-nft/${tokenId}?socketId=${this.socketId}`).toPromise()
+  deleteNFT(tokenId: string, nftIds: Array<string>): Promise<string | undefined> {
+    return this.http.post<string>(`${environment.API}/sdk/delete-nft/${tokenId}?socketId=${this.socketId}`, {
+      nftIds
+    }).toPromise()
   }
 
   refreshNFT(accountId: string): Promise<UserAccount | undefined> {
@@ -100,8 +102,8 @@ export class ConnectService {
     }).toPromise()
   }
 
-  getNFTForSale(tokenId: string): Observable<NFTForSale & { media: string } | null> {
-    return this.http.get<NFTForSale>(`${environment.API}/sdk/nft-for-sale?tokenId=${tokenId}`).pipe(
+  getNFTForSale(tokenId: string, nftId: string): Observable<NFTForSale & { media: string } | null> {
+    return this.http.get<NFTForSale>(`${environment.API}/sdk/nft-for-sale?tokenId=${tokenId}&nftId=${nftId}`).pipe(
       switchMap(res => {
         if (!res.nft) {
           return of(null)

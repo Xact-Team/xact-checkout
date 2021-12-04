@@ -14,9 +14,9 @@ import { IDropdownSettings } from 'ng-multiselect-dropdown'
   templateUrl: './sell.component.html',
   styles: [
     `
-      :host {
-        display: block;
-      }
+        :host {
+            display: block;
+        }
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -27,15 +27,25 @@ export class SellComponent implements OnInit {
   sellForm: FormGroup = this.fb.group({
     hbarAmount: ['', Validators.required],
     quantity: ['', Validators.required],
+    isCollection: [''],
     // accountIds: [''],
   })
 
-  nft!: NFT
+  nft!: any
 
   //Multiselect dropdown
   dropdownList: any = []
   selectedItems = []
-  dropdownSettings: IDropdownSettings = {}
+  dropdownSettings: IDropdownSettings = {
+    singleSelection: false,
+    idField: 'item_id',
+    textField: 'item_text',
+    selectAllText: 'Select All',
+    unSelectAllText: 'UnSelect All',
+    itemsShowLimit: 3,
+    allowSearchFilter: true,
+    enableCheckAll: true,
+  }
 
   constructor(
     private readonly fb: FormBuilder,
@@ -50,23 +60,15 @@ export class SellComponent implements OnInit {
     if (Object.keys(this.nft).length === 0) {
       this.router.navigateByUrl('/')
     } else {
-      if (this.nft.forSale) {
-        this.sellForm.patchValue({ ...this.nft.forSale })
+      if (this.nft.nftIdsForSale) {
+        this.sellForm.patchValue({ ...this.nft.nftIdsForSale })
       }
     }
   }
 
   ngOnInit(): void {
     //MultiSelect init
-    this.dropdownList = this.nft['nftIds']
-    this.dropdownSettings = {
-      singleSelection: false,
-      selectAllText: 'Select All',
-      unSelectAllText: 'UnSelect All',
-      itemsShowLimit: 3,
-      allowSearchFilter: true,
-      enableCheckAll: false,
-    }
+      this.dropdownList = this.nft.nftIdsForSale ? this.nft.nftIdsForSale.map((el: any) => el.nftId) : this.nft['nftIds'];
   }
 
   get hbarAmount() {
@@ -85,6 +87,8 @@ export class SellComponent implements OnInit {
         quantity: this.sellForm.get('quantity')?.value,
         hbarAmount: this.sellForm.get('hbarAmount')?.value || 0,
         tokenId: this.nft.tokenId,
+        nftIds: this.selectedItems,
+        isCollection: this.sellForm.get('isCollection')?.value || false
       })
       await this.spinner.hide()
       this.requestService.open({
@@ -101,7 +105,7 @@ export class SellComponent implements OnInit {
   async delete(user: UserAccount) {
     try {
       await this.spinner.show()
-      await this.connectService.deleteNFT(this.nft.tokenId)
+      await this.connectService.deleteNFT(this.nft.tokenId, this.selectedItems);
       this.requestService.open({
         title: 'Waiting for request Validation...',
         subtitle: 'Please Validate the Request from Xact Wallet',
@@ -114,11 +118,7 @@ export class SellComponent implements OnInit {
     }
   }
 
-  onItemSelect(item: any) {
-    console.log(this.selectedItems)
-  }
-
-  onDeSelect(item: any) {
-    console.log(this.selectedItems)
+  updateItem($event: any) {
+    this.sellForm.get('quantity')!.setValue(this.selectedItems.length)
   }
 }

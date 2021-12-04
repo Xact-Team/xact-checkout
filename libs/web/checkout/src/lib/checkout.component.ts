@@ -18,7 +18,8 @@ import { HomeTileComponent } from '../../../home/ui/tile/src/lib/home-tile.compo
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CheckoutComponent {
-  tokenId: string
+  tokenId: string;
+  nftId: string;
   nft$!: Observable<any>
   type!: string
   emptyNFT = false
@@ -26,12 +27,13 @@ export class CheckoutComponent {
   constructor(private readonly route: ActivatedRoute,
               private readonly connectService: ConnectService,
               private readonly router: Router) {
-    this.tokenId = this.route.snapshot.paramMap.get('tokenId') as string
+    this.tokenId = this.route.snapshot.paramMap.get('tokenId') as string;
+    this.nftId = this.route.snapshot.paramMap.get('nftId') as string;
     if (!this.tokenId) {
       this.router.navigate(['/'])
       return
     } else {
-      this.nft$ = this.connectService.getNFTForSale(this.tokenId).pipe(
+      this.nft$ = this.connectService.getNFTForSale(this.tokenId, this.nftId).pipe(
         tap(nft => {
           if (nft) {
             HomeTileComponent.getTypeNft(nft.media).then((type)=>{

@@ -10,10 +10,10 @@
          alt=''>
     <model-viewer class="rounded-xl w-full" *ngIf="type === '3D'" [src]="media" ar ar-scale="fixed" camera-controls
                   xr-environment></model-viewer>
-    <span class='absolute top-0 right-0 py-1 px-2 mt-2 mr-2 bg-blue-800 rounded text-xs text-white'
-          *ngIf='nft?.forSale'>
-      For Sale (x{{nft?.forSale?.quantity}}) - {{nft?.forSale?.hbarAmount}} ℏ
-    </span>
+<!--    <span class='absolute top-0 right-0 py-1 px-2 mt-2 mr-2 bg-blue-800 rounded text-xs text-white'-->
+<!--          *ngIf='nft?.nftIdsForSale'>-->
+<!--      For Sale (x{{nft?.forSale?.quantity}}) - {{nft?.forSale?.hbarAmount}} ℏ-->
+<!--    </span>-->
   </div>
   <div class='flex mb-6 justify-between items-center'>
     <div>
@@ -40,29 +40,36 @@
       <a [href]='nft?.url' *ngIf='nft?.url' target='_blank'>Open</a>
     </span>
   </div>
-  <div class='flex mb-2 justify-between items-center' *ngIf='nft?.forSale'>
+  <div class='flex mb-2 justify-between items-center' *ngIf='nft?.nftIdsForSale'>
     <h4 class='text-xs font-medium'>Checkout URL</h4>
     <span class='text-xs text-blue-500 font-medium'>
-      <a class='underline' routerLink='/checkout/{{nft?.forSale?.tokenId}}' target='_blank'>Go to Checkout</a>
+       <ng-multiselect-dropdown
+         [settings]='dropdownSettings'
+         style='color: #5E61E1;'
+         [placeholder]="'Select Tokens'"
+         [data]='dropdownList'
+         [(ngModel)]='selectedItems'
+         [ngModelOptions]='{ standalone: true }'
+       ></ng-multiselect-dropdown>
     </span>
   </div>
   <div class='mb-5 justify-between items-center'>
     <h4 class='text-xs font-medium'>Description</h4>
     <span class='text-xs font-medium h-20 dark:text-dark overflow-auto'>
-      {{nft?.description}}
+      {{nft?.description?.description}}
     </span>
   </div>
-  <div class='flex items-ceenter justify-between border-t border-gray-50 pt-4'>
-    <div class='flex'>
-    </div>
+  <div class='border-t border-gray-50 pt-4'>
     <a class='py-2 px-3 bg-blue-800 rounded-md text-xs text-white transition duration-200 cursor-pointer'
-       *ngIf='nft?.forSale else sell'
+       *ngIf='nft?.nftIdsForSale else sell'
        (click)='sellHandler(nft)'>
       Update
     </a>
+    <a *ngIf='nft?.nftIdsForSale else sell' class='ml-2 py-2 px-3 bg-blue-800 rounded-md text-xs text-white transition duration-200 cursor-pointer'
+       routerLink='/checkout/{{nft.tokenId}}/{{selectedItems[0]}}' target='_blank'>Go to Checkout</a>
     <ng-template #sell>
       <a
-        class='py-2 px-3 font-bold dark:text-gray-800 bg-xact rounded-md text-xs text-white transition duration-200 cursor-pointer'
+        class='ml-2 py-2 px-3 font-bold dark:text-gray-800 bg-xact rounded-md text-xs text-white transition duration-200 cursor-pointer'
         (click)='sellHandler(nft)'>
         Sell this NFT
       </a>
