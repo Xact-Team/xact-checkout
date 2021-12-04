@@ -49,9 +49,11 @@ export class SdkController {
   @Get('nft-for-sale')
   @ApiOperation({ description: 'Get NFT For Sale' })
   @ApiOkResponse()
-  async getNFTForSale(@Query('tokenId') tokenId: string): Promise<NFTForSale> {
+  async getNFTForSale(@Query('tokenId') tokenId: string,
+                      @Query('nftId') nftId: string): Promise<NFTForSale> {
     try {
-      return await this.service.getNFTForSale(tokenId)
+      return await this.service.
+      getNFTForSale(tokenId, nftId)
     } catch (e) {
       throw new HttpException({
         error: e,

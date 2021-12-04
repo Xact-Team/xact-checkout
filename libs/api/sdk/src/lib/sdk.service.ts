@@ -72,11 +72,11 @@ export class SdkService {
     return this.client.refreshAccount(opts)
   }
 
-  async getNFTForSale(tokenId: string): Promise<NFTForSale> {
+  async getNFTForSale(tokenId: string, nftId: string): Promise<NFTForSale> {
     if (!this.client) {
       await this.initClient()
     }
-    return this.client.getNFTForSaleByTokenId({ tokenId })
+    return this.client.getNFTForSaleByTokenId({ tokenId, nftId })
   }
 
   /* Listen To new Buy Event */
