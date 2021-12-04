@@ -39,7 +39,7 @@ export class SdkController {
     try {
       return await this.service.sellNFT(opts)
     } catch (e) {
-      console.log('err selling nft', e);
+      console.log('err selling nft', e)
       throw new HttpException({
         error: e,
       }, HttpStatus.BAD_REQUEST)
@@ -59,11 +59,13 @@ export class SdkController {
     }
   }
 
-  @Delete('delete-nft/:id')
+  @Post('delete-nft/:id')
   async removeFromSale(@Param('id') id: string,
-                       @Query('socketId') socketId: string): Promise<void> {
+                       @Body() opts: { nftIds: Array<string> },
+                       @Query('socketId',
+                       ) socketId: string): Promise<void> {
     try {
-      return await this.service.removeFromSale(id, socketId)
+      return await this.service.removeFromSale(id, opts.nftIds, socketId)
     } catch (e) {
       throw new HttpException({
         error: e,

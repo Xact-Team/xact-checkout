@@ -87,11 +87,11 @@ export class SdkService {
   }
 
 
-  async removeFromSale(tokenId: string, socketId: string) {
+  async removeFromSale(tokenId: string, nftIds: Array<string>, socketId: string) {
     if (!this.client) {
       await this.initClient()
     }
-    return this.client.deleteNFTFromSale({ tokenId, socketId })
+    return this.client.deleteNFTFromSale({ tokenId, socketId, nftIds })
   }
 
   private listenToRemoveSaleEvent() {
