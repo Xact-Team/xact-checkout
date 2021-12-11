@@ -101,7 +101,6 @@ jobs:
     parameters:
       app:
         type: string
-        default: api
     steps:
       - checkout
       - dependencies-in-cache
@@ -219,6 +218,7 @@ workflows:
     jobs:
       - ci-build-job:
           name: ci-build-api
+          app: api
           filters:
             branches:
               ignore:
@@ -251,6 +251,7 @@ workflows:
     jobs:
       - ci-build-job:
           name: ci-build-api
+          app: api
           filters:
             branches:
               only:
@@ -275,6 +276,7 @@ workflows:
     jobs:
       - ci-build-job:
           name: ci-build-api
+          app: api
           filters:
             branches:
               ignore: /.*/
