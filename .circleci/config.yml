@@ -1,5 +1,5 @@
 orbs:
-  aws-ecr: circleci/aws-ecr@6.15.2
+  aws-ecr: circleci/aws-ecr@7.3.0
 
 version: 2.1
 
@@ -33,12 +33,11 @@ commands:
       version:
         type: string
     steps:
-      - run: docker build -t $AWS_ECR_ACCOUNT_URL/$AWS_ECR_REPOSITORY:$CIRCLE_BUILD_NUM -t $AWS_ECR_ACCOUNT_URL/$AWS_ECR_REPOSITORY:<< parameters.tag >> -t $AWS_ECR_ACCOUNT_URL/$AWS_ECR_REPOSITORY:<< parameters.version >> .
+      - run: docker build -f ./apps/api/Dockerfile . -t $AWS_ECR_ACCOUNT_URL/$AWS_ECR_REPOSITORY:$CIRCLE_BUILD_NUM -t $AWS_ECR_ACCOUNT_URL/$AWS_ECR_REPOSITORY:<< parameters.tag >> -t $AWS_ECR_ACCOUNT_URL/$AWS_ECR_REPOSITORY:<< parameters.version >> .
       - aws-ecr/ecr-login:
           account-url: AWS_ECR_ACCOUNT_URL
           aws-access-key-id: AWS_ACCESS_KEY_ID
           aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-          profile-name: circleci
           region: AWS_REGION
       - aws-ecr/push-image:
           account-url: AWS_ECR_ACCOUNT_URL
@@ -51,7 +50,7 @@ commands:
       tag:
         type: string
     steps:
-      - run: docker build -t $AWS_ECR_ACCOUNT_URL/$AWS_ECR_REPOSITORY:$CIRCLE_BUILD_NUM -t $AWS_ECR_ACCOUNT_URL/$AWS_ECR_REPOSITORY:<< parameters.tag >> .
+      - run: docker build -f ./apps/api/Dockerfile . -t $AWS_ECR_ACCOUNT_URL/$AWS_ECR_REPOSITORY:$CIRCLE_BUILD_NUM -t $AWS_ECR_ACCOUNT_URL/$AWS_ECR_REPOSITORY:<< parameters.tag >> .
       - aws-ecr/ecr-login:
           account-url: AWS_ECR_ACCOUNT_URL
           aws-access-key-id: AWS_ACCESS_KEY_ID
@@ -110,6 +109,11 @@ jobs:
             equal: [ << parameters.app >>, api ]
           steps:
             - run: npm run build api
+            - persist_to_workspace:
+                root: .
+                paths:
+                  - 'dist/apps/api'
+
       - when:
           condition:
             equal: [ << parameters.app >>, web ]
@@ -132,6 +136,8 @@ jobs:
         default: false
     steps:
       - checkout
+      - attach_workspace:
+          at: .
       - setup_remote_docker:
           docker_layer_caching: false
       - when:
