@@ -19,7 +19,6 @@ import { IDropdownSettings } from 'ng-multiselect-dropdown'
         }
     `,
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SellComponent implements OnInit {
   vm$ = this.userStore.vm$
@@ -119,6 +118,6 @@ export class SellComponent implements OnInit {
   }
 
   updateItem($event: any) {
-    this.sellForm.get('quantity')!.setValue(this.selectedItems.length)
+    this.sellForm.get('quantity')!.setValue(this.selectedItems.length);
   }
 }

@@ -65,7 +65,7 @@
        (click)='sellHandler(nft)'>
       Update
     </a>
-    <a *ngIf='nft?.nftIdsForSale else sell' class='ml-2 py-2 px-3 bg-blue-800 rounded-md text-xs text-white transition duration-200 cursor-pointer'
+    <a *ngIf='nft?.nftIdsForSale' class='ml-2 py-2 px-3 bg-blue-800 rounded-md text-xs text-white transition duration-200 cursor-pointer'
        routerLink='/checkout/{{nft.tokenId}}/{{selectedItems[0]}}' target='_blank'>Go to Checkout</a>
     <ng-template #sell>
       <a

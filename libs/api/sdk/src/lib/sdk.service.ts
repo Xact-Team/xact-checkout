@@ -8,9 +8,7 @@ import { Client, DebugLevel, NFTForSale, RefreshAccountDTO, ScopeEnum, SellNFTDt
 export class SdkService {
   client
 
-  constructor(@InjectAppConfig() readonly appConfig: AppConfig,
-              private readonly eventEmitter: EventEmitter2) {
-  }
+  constructor(@InjectAppConfig() readonly appConfig: AppConfig, private readonly eventEmitter: EventEmitter2) {}
 
   /* Init Client */
   async initClient() {
@@ -18,8 +16,8 @@ export class SdkService {
       apiKey: this.appConfig.sdkApi,
       options: {
         debugLevel: DebugLevel.DEBUG,
-        apiUrl: 'https://api.dev.xact.ac/v1',
-        socketUrl: 'https://api.dev.xact.ac',
+        apiUrl: 'https://xactapi.net/v1',
+        socketUrl: 'https://xactapi.net',
       },
     })
     await this.client.initConnexion()
@@ -44,7 +42,7 @@ export class SdkService {
 
   /* Listen to new Auth Event */
   listenToAuthEvent() {
-    this.client.connect().subscribe(user => {
+    this.client.connect().subscribe((user) => {
       this.eventEmitter.emit('xactCheckout.auth', user)
     })
   }
@@ -59,7 +57,7 @@ export class SdkService {
 
   /* Listen to new Sell Event */
   listenToSellEvent() {
-    this.client.sellNFTValidation().subscribe(nft => {
+    this.client.sellNFTValidation().subscribe((nft) => {
       this.eventEmitter.emit('xactCheckout.sell', nft)
     })
   }
@@ -81,11 +79,10 @@ export class SdkService {
 
   /* Listen To new Buy Event */
   listenToBuyEvent() {
-    this.client.buyNFTValidation().subscribe(nft => {
+    this.client.buyNFTValidation().subscribe((nft) => {
       this.eventEmitter.emit('xactCheckout.buy', nft)
     })
   }
-
 
   async removeFromSale(tokenId: string, nftIds: Array<string>, socketId: string) {
     if (!this.client) {
