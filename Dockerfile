@@ -1,10 +1,9 @@
-FROM node:14.18.2-alpine3.14
+FROM node:14.18.2-bullseye-slim AS build
 
 COPY . .
 
-RUN apk add --update git \
+RUN npm install -g @angular/cli@12.2.1 \
 && npm install \
-&& npm install -g @angular/cli@12.2.1 \
 && npm run build api
 
 WORKDIR /dist
