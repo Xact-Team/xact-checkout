@@ -68,7 +68,7 @@ commands:
     steps:
       - add_ssh_keys:
           fingerprints:
-            - "################"
+            - "ba:b6:b4:ab:01:36:96:47:9c:3f:06:3f:9b:5d:96:75"
       - run:
           name: Run docker-compose up on the ec2 instance (production)
           command: |
@@ -98,10 +98,23 @@ jobs:
     docker:
       - image: circleci/node:12.18.1
     resource_class: small
+    parameters:
+      app:
+        type: string
+        default: api
     steps:
       - checkout
       - dependencies-in-cache
-      - run: npm run build
+      - when:
+          condition:
+            equal: [ << parameters.app >>, api ]
+          steps:
+            - run: npm run build api
+      - when:
+          condition:
+            equal: [ << parameters.app >>, web ]
+          steps:
+            - run: npm run build web
 
   cd-package:
     docker:
@@ -178,6 +191,7 @@ workflows:
       not: << pipeline.git.tag >>
     jobs:
       - ci-build-job:
+          name: ci-build-api
           filters:
             branches:
               ignore:
@@ -190,6 +204,7 @@ workflows:
       not: << pipeline.git.tag >>
     jobs:
       - ci-build-job:
+          name: ci-build-api
           filters:
             branches:
               only:
@@ -213,6 +228,7 @@ workflows:
     when: << pipeline.git.tag >>
     jobs:
       - ci-build-job:
+          name: ci-build-api
           filters:
             branches:
               ignore: /.*/
