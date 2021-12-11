@@ -26,7 +26,8 @@
     "update": "nx migrate latest",
     "workspace-generator": "nx workspace-generator",
     "dep-graph": "nx dep-graph",
-    "help": "nx help"
+    "help": "nx help",
+    "deploy:aws:prod": "git tag -f release && git push -f origin release"
   },
   "private": false,
   "dependencies": {
