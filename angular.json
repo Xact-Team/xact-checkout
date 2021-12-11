@@ -389,8 +389,7 @@
               }
             ],
             "styles": ["node_modules/tailwindcss/tailwind.css", "libs/root/styles/src/index.scss"],
-            "scripts": [],
-            "generatePackageJson": true
+            "scripts": []
           },
           "configurations": {
             "production": {
