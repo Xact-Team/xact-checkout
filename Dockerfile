@@ -4,6 +4,7 @@ COPY . .
 
 RUN apk add --update git \
 && npm install \
+&& npm install -g @angular/cli@12.2.1
 && npm run build api
 
 WORKDIR /dist
