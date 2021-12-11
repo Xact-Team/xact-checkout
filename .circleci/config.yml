@@ -77,7 +77,7 @@ commands:
             # Get AWS Region
             AWS_REGION=eu-central-1
             # Get SG ID
-            SG_ID=################
+            SG_ID=sg-0cf49287947b785d5
             # Add an ingress rule to the security group
             /usr/local/bin/aws ec2 authorize-security-group-ingress --region $AWS_REGION --group-id $SG_ID \
               --protocol tcp --port 22 --cidr $PUBLIC_IP/24
@@ -86,7 +86,7 @@ commands:
             # SSH to the server to deploy
             EC2_USERNAME=ec2-user
             # Server's URL or public IP
-            EC2_PUBLIC_DNS=################
+            EC2_PUBLIC_DNS=ec2-3-66-147-146.eu-central-1.compute.amazonaws.com
             # Commands
             ssh -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_PUBLIC_DNS "cd ~/xact-checkout-api; docker-compose down -v; aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 050653545432.dkr.ecr.eu-central-1.amazonaws.com; docker-compose pull; docker-compose up -d"
             # Remove the ingress rule
