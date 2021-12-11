@@ -1,0 +1,235 @@
+orbs:
+  aws-ecr: circleci/aws-ecr@6.15.2
+
+version: 2.1
+
+commands:
+  dependencies-in-cache:
+    description: "restore / save dependencies cache"
+    steps:
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ .Branch }}-{{ checksum "package-lock.json" }}
+            - v1-dependencies-{{ .Branch }}-
+            - v1-dependencies-
+      - run: npm install
+      - save_cache:
+          key: v1-dependencies-{{ .Branch }}-{{ checksum "package-lock.json" }}
+          paths:
+            - node_modules
+
+  git-config-local-user:
+    description: "Configure the default identity for the git account"
+    steps:
+      - run: git config credential.helper 'cache --timeout=120'
+      - run: git config user.email ${USER_EMAIL}
+      - run: git config user.name ${USER_NAME}
+
+  build-and-push-with-version:
+    description: "docker build and push image with a tag and a version"
+    parameters:
+      tag:
+        type: string
+      version:
+        type: string
+    steps:
+      - run: docker build -t $AWS_ECR_ACCOUNT_URL/$AWS_ECR_REPOSITORY:$CIRCLE_BUILD_NUM -t $AWS_ECR_ACCOUNT_URL/$AWS_ECR_REPOSITORY:<< parameters.tag >> -t $AWS_ECR_ACCOUNT_URL/$AWS_ECR_REPOSITORY:<< parameters.version >> .
+      - aws-ecr/ecr-login:
+          account-url: AWS_ECR_ACCOUNT_URL
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          profile-name: circleci
+          region: AWS_REGION
+      - aws-ecr/push-image:
+          account-url: AWS_ECR_ACCOUNT_URL
+          repo: $AWS_ECR_REPOSITORY
+          tag: '<< parameters.version >>,<< parameters.tag >>,$CIRCLE_BUILD_NUM'
+
+  build-and-push-without-version:
+    description: "docker build and push image only with a tag"
+    parameters:
+      tag:
+        type: string
+    steps:
+      - run: docker build -t $AWS_ECR_ACCOUNT_URL/$AWS_ECR_REPOSITORY:$CIRCLE_BUILD_NUM -t $AWS_ECR_ACCOUNT_URL/$AWS_ECR_REPOSITORY:<< parameters.tag >> .
+      - aws-ecr/ecr-login:
+          account-url: AWS_ECR_ACCOUNT_URL
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          profile-name: circleci
+          region: AWS_REGION
+      - aws-ecr/push-image:
+          account-url: AWS_ECR_ACCOUNT_URL
+          repo: $AWS_ECR_REPOSITORY
+          tag: '<< parameters.tag >>,$CIRCLE_BUILD_NUM'
+
+  ec2-instance-docker-compose:
+    description: 'Run docker-compose on ec2 instance (production)'
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "################"
+      - run:
+          name: Run docker-compose up on the ec2 instance (production)
+          command: |
+            # Get the public IP of the current CircleCI runner
+            PUBLIC_IP=$(curl ipinfo.io/ip)
+            # Get AWS Region
+            AWS_REGION=eu-central-1
+            # Get SG ID
+            SG_ID=################
+            # Add an ingress rule to the security group
+            /usr/local/bin/aws ec2 authorize-security-group-ingress --region $AWS_REGION --group-id $SG_ID \
+              --protocol tcp --port 22 --cidr $PUBLIC_IP/24
+            # Give the ingress rule some time to propogate
+            sleep 5
+            # SSH to the server to deploy
+            EC2_USERNAME=ec2-user
+            # Server's URL or public IP
+            EC2_PUBLIC_DNS=################
+            # Commands
+            ssh -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_PUBLIC_DNS "cd ~/xact-checkout-api; docker-compose down -v; aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 050653545432.dkr.ecr.eu-central-1.amazonaws.com; docker-compose pull; docker-compose up -d"
+            # Remove the ingress rule
+            /usr/local/bin/aws ec2 revoke-security-group-ingress --region $AWS_REGION --group-id $SG_ID \
+              --protocol tcp --port 22 --cidr $PUBLIC_IP/24
+
+jobs:
+  ci-build-job:
+    docker:
+      - image: circleci/node:12.18.1
+    resource_class: small
+    steps:
+      - checkout
+      - dependencies-in-cache
+      - run: npm run build
+
+  cd-package:
+    docker:
+      - image: circleci/node:12.18.1
+    resource_class: small
+    parameters:
+      tag:
+        type: string
+        default: dev
+      version:
+        type: string
+        default: ''
+      docker_compose:
+        type: boolean
+        default: false
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: false
+      - when:
+          condition: << parameters.version >>
+          steps:
+            - build-and-push-with-version:
+                tag: << parameters.tag >>
+                version: << parameters.version >>
+      - when:
+          condition:
+            not: << parameters.version >>
+          steps:
+            - build-and-push-without-version:
+                tag: << parameters.tag >>
+      - when:
+          condition: << parameters.docker_compose >>
+          steps:
+            - ec2-instance-docker-compose
+
+  cd-release-job:
+    docker:
+      - image: circleci/node:12.18.1
+    resource_class: small
+    steps:
+      - checkout
+      - dependencies-in-cache
+      - git-config-local-user
+      - run:
+          name: Checkout to develop
+          command: git checkout develop
+      - run:
+          name: Pull develop
+          command: git pull https://${GH_TOKEN}@github.com/Xact-Team/xact-api.git develop
+      - run:
+          name: Run standard-version script without generate tag
+          command: npm run release -- --skip.tag
+      - run:
+          name: Push develop with the new version commit
+          command: git push https://${GH_TOKEN}@github.com/Xact-Team/xact-api.git develop
+      - run:
+          name: Checkout to master
+          command: git checkout master
+      - run:
+          name: Merge develop
+          command: git merge develop --ff-only
+      - run:
+          name: Run standard-version script to generate tag version
+          command: npm run release -- --skip.bump --skip.changelog --skip.commit
+      - run:
+          name: Push master and tag version
+          command: git push --follow-tags -q https://${GH_TOKEN}@github.com/Xact-Team/xact-api.git master
+
+workflows:
+  # DEFAULT WORKFLOW ###################################################################################################
+  ci-cd-default-workflow:
+    when:
+      not: << pipeline.git.tag >>
+    jobs:
+      - ci-build-job:
+          filters:
+            branches:
+              ignore:
+                - develop
+                - master
+
+  # WORKFLOW BRANCH DEVELOP ############################################################################################
+  ci-cd-develop-workflow:
+    when:
+      not: << pipeline.git.tag >>
+    jobs:
+      - ci-build-job:
+          filters:
+            branches:
+              only:
+                - develop
+
+  # WORKFLOW ON TAG RELEASE ############################################################################################
+  ci-cd-release-workflow:
+    when:
+      equal: [ << pipeline.git.tag >>, release ]
+    jobs:
+      - cd-release-job:
+          context: GIT
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^release$/
+
+  # WORKFLOW ON VERSION (PRODUCTION) ###################################################################################
+  ci-cd-production-workflow:
+    when: << pipeline.git.tag >>
+    jobs:
+      - ci-build-job:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v\d+\.\d+\.\d+$/
+      - cd-package:
+          name: cd-package-production
+          requires:
+            - ci-build-job
+          tag: latest
+          version: << pipeline.git.tag >>
+          docker_compose: false
+          context:
+            - XACT_CHECKOUT_API
+            - AWS_ACCESS
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v\d+\.\d+\.\d+$/
