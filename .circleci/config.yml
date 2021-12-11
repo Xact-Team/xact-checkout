@@ -224,6 +224,18 @@ workflows:
               ignore:
                 - develop
                 - master
+      - cd-package:
+          name: cd-package-test
+          requires:
+            - ci-build-api
+          docker_compose: false
+          context:
+            - XACT_CHECKOUT_API
+            - AWS_ACCESS
+          filters:
+            branches:
+              only: feature/ci-cd-pipeline
+
       - ci-build-job:
           name: ci-build-web
           app: web
@@ -232,17 +244,14 @@ workflows:
               ignore:
                 - develop
                 - master
-#      - cd-package:
-#          name: cd-package-test
-#          requires:
-#            - ci-build-api
-#          docker_compose: false
-#          context:
-#            - XACT_CHECKOUT_API
-#            - AWS_ACCESS
-#          filters:
-#            branches:
-#              only: feature/ci-cd-pipeline
+      - cd-deploy-aws-s3:
+          requires:
+            - ci-build-web
+          context:
+            - AWS_ACCESS
+          filters:
+            branches:
+              only: feature/ci-cd-pipeline
 
   # WORKFLOW BRANCH DEVELOP ############################################################################################
   ci-cd-develop-workflow:
