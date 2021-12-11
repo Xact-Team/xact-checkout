@@ -1,5 +1,6 @@
 orbs:
   aws-ecr: circleci/aws-ecr@7.3.0
+  aws-s3: circleci/aws-s3@2.0.0
 
 version: 2.1
 
@@ -119,6 +120,10 @@ jobs:
             equal: [ << parameters.app >>, web ]
           steps:
             - run: npm run build web
+            - persist_to_workspace:
+                root: .
+                paths:
+                  - 'dist/apps/web'
 
   cd-package:
     docker:
@@ -156,6 +161,22 @@ jobs:
           condition: << parameters.docker_compose >>
           steps:
             - ec2-instance-docker-compose
+
+  cd-deploy-aws-s3:
+    docker:
+      - image: cimg/python:3.6
+    resource_class: small
+    parameters:
+      s3_url:
+        type: string
+        default: $AWS_S3_BUCKET
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - aws-s3/sync:
+          from: 'dist/apps/web'
+          to: << parameters.s3_url >>
 
   cd-release-job:
     docker:
@@ -198,6 +219,14 @@ workflows:
     jobs:
       - ci-build-job:
           name: ci-build-api
+          filters:
+            branches:
+              ignore:
+                - develop
+                - master
+      - ci-build-job:
+          name: ci-build-web
+          app: web
           filters:
             branches:
               ignore:
