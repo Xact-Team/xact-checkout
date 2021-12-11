@@ -222,7 +222,6 @@ workflows:
           filters:
             branches:
               ignore:
-                - develop
                 - master
       - cd-package:
           name: cd-package-test
@@ -242,29 +241,7 @@ workflows:
           filters:
             branches:
               ignore:
-                - develop
                 - master
-      - cd-deploy-aws-s3:
-          requires:
-            - ci-build-web
-          context:
-            - AWS_ACCESS
-          filters:
-            branches:
-              only: feature/ci-cd-pipeline
-
-  # WORKFLOW BRANCH DEVELOP ############################################################################################
-  ci-cd-develop-workflow:
-    when:
-      not: << pipeline.git.tag >>
-    jobs:
-      - ci-build-job:
-          name: ci-build-api
-          app: api
-          filters:
-            branches:
-              only:
-                - develop
 
   # WORKFLOW ON TAG RELEASE ############################################################################################
   ci-cd-release-workflow:
@@ -291,13 +268,14 @@ workflows:
               ignore: /.*/
             tags:
               only: /^v\d+\.\d+\.\d+$/
+
       - cd-package:
           name: cd-package-production
           requires:
-            - ci-build-job
+            - ci-build-api
           tag: latest
           version: << pipeline.git.tag >>
-          docker_compose: false
+          docker_compose: true
           context:
             - XACT_CHECKOUT_API
             - AWS_ACCESS
@@ -306,3 +284,25 @@ workflows:
               ignore: /.*/
             tags:
               only: /^v\d+\.\d+\.\d+$/
+
+      - ci-build-job:
+          name: ci-build-web
+          app: web
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v\d+\.\d+\.\d+$/
+
+      - cd-deploy-aws-s3:
+          requires:
+            - ci-build-web
+          context:
+            - AWS_ACCESS
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v\d+\.\d+\.\d+$/
+
+
