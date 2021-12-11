@@ -190,13 +190,13 @@ jobs:
           command: git checkout develop
       - run:
           name: Pull develop
-          command: git pull https://${GH_TOKEN}@github.com/Xact-Team/xact-api.git develop
+          command: git pull https://${GH_TOKEN}@github.com/Xact-Team/xact-checkout.git develop
       - run:
           name: Run standard-version script without generate tag
           command: npm run release -- --skip.tag
       - run:
           name: Push develop with the new version commit
-          command: git push https://${GH_TOKEN}@github.com/Xact-Team/xact-api.git develop
+          command: git push https://${GH_TOKEN}@github.com/Xact-Team/xact-checkout.git develop
       - run:
           name: Checkout to master
           command: git checkout master
@@ -208,7 +208,7 @@ jobs:
           command: npm run release -- --skip.bump --skip.changelog --skip.commit
       - run:
           name: Push master and tag version
-          command: git push --follow-tags -q https://${GH_TOKEN}@github.com/Xact-Team/xact-api.git master
+          command: git push --follow-tags -q https://${GH_TOKEN}@github.com/Xact-Team/xact-checkout.git master
 
 workflows:
   # DEFAULT WORKFLOW ###################################################################################################
