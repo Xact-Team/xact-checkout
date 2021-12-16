@@ -3,8 +3,9 @@ import { UiStore } from '@xact-checkout/shared/data-access/ui-store'
 import { ConnectService } from '@xact-checkout/shared/ui/connect'
 import { NavItem } from '@xact-checkout/shared/data-access/models'
 import { UserStore } from '@xact-checkout/shared/data-access/user-store'
-import { BehaviorSubject, map } from 'rxjs'
+import { BehaviorSubject, map, take } from 'rxjs'
 import { ToastrService } from 'ngx-toastr'
+import { UserAccount } from '@xact-wallet-sdk/client'
 
 @Component({
   selector: 'xact-checkout-header',
@@ -29,6 +30,10 @@ export class HeaderComponent {
               private readonly userStore: UserStore,
               private readonly toastService: ToastrService,
               private readonly connectService: ConnectService) {
+    this.user$.pipe(take(1)).toPromise().then(async (user: any)=>{
+      if (user)
+        await this.refresh(user.accountId);
+    })
   }
 
   connect() {

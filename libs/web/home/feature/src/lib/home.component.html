@@ -1,4 +1,9 @@
 <xact-checkout-page *ngIf='vm$ | async as vm'>
+<!--  <div class='bg-white dark:bg-gray-800 px-4 py-6 sm:p-6 rounded-2xl'>-->
+<!--    <div class='container px-4 mx-auto'>-->
+<!--      <h3 class='w-full md:mt-8 ml-4'>Maintenance running...</h3>-->
+<!--    </div>-->
+<!--  </div>-->
   <div class='bg-white dark:bg-gray-800 px-4 py-6 sm:p-6 rounded-2xl' *ngIf='vm.user else notAuth'>
     <div class='container px-4 mx-auto'>
       <h3 *ngIf='isLoading$ | async' class='w-full md:mt-8 ml-4'>Your data are being saved in the Local Storage... Please wait</h3>

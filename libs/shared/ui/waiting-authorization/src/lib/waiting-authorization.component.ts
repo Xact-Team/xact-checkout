@@ -81,7 +81,7 @@ export class WaitingAuthorizationComponent implements OnInit {
         try {
           this.ref.close()
           if (nft.status === StatusRequest.ACCEPTED) {
-            this.toastService.success('Your NFT is now on sell !')
+            this.toastService.success('Your NFT is now on sale !')
             const user = await this.connectService.refreshNFT(this.ref.data.accountId)
             user && this.userStore.setUserEffect(user)
             return this.router.navigateByUrl(`/checkout/${nft.tokenId}`)
