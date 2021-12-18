@@ -88,7 +88,7 @@ commands:
             # Server's URL or public IP
             EC2_PUBLIC_DNS=ec2-3-66-147-146.eu-central-1.compute.amazonaws.com
             # Commands
-            ssh -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_PUBLIC_DNS "cd ~/xact-checkout-api; docker-compose down -v; aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 050653545432.dkr.ecr.eu-central-1.amazonaws.com; docker-compose pull; docker-compose up -d"
+            ssh -o StrictHostKeyChecking=no $EC2_USERNAME@$EC2_PUBLIC_DNS "cd ~/xact-apis; docker-compose rm -f -s -v checkout-api; aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 050653545432.dkr.ecr.eu-central-1.amazonaws.com; docker-compose pull checkout-api; docker-compose up -d checkout-api"
             # Remove the ingress rule
             /usr/local/bin/aws ec2 revoke-security-group-ingress --region $AWS_REGION --group-id $SG_ID \
               --protocol tcp --port 22 --cidr $PUBLIC_IP/24
