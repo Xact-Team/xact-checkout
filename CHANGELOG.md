@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.5](https://github.com/Xact-Team/xact-checkout/compare/v0.1.4...v0.1.5) (2021-12-18)
+
+
+### Features
+
+* refresh on reload ([3997266](https://github.com/Xact-Team/xact-checkout/commit/39972668657e97ba076108f9eecda35958d81bba))
+
 ### 0.1.4 (2021-12-11)
 
 
