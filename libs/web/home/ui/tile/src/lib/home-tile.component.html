@@ -1,4 +1,4 @@
-<div class='p-4 bg-container dark:bg-gray-700 rounded'>
+<div class='p-4 bg-container dark:bg-gray-700 rounded' *ngIf='user$ | async as user'>
   <div class='relative h-80 w-full mb-4' *ngIf='media$ | async as media'>
     <img class='w-full h-full object-cover rounded'
          *ngIf='type === "image"'
@@ -8,12 +8,12 @@
          *ngIf='type !== "image" && type !== "3D"'
          [src]='getTypeImage(type!)'
          alt=''>
-    <model-viewer class="rounded-xl w-full" *ngIf="type === '3D'" [src]="media" ar ar-scale="fixed" camera-controls
+    <model-viewer class='rounded-xl w-full' *ngIf="type === '3D'" [src]='media' ar ar-scale='fixed' camera-controls
                   xr-environment></model-viewer>
-<!--    <span class='absolute top-0 right-0 py-1 px-2 mt-2 mr-2 bg-blue-800 rounded text-xs text-white'-->
-<!--          *ngIf='nft?.nftIdsForSale'>-->
-<!--      For Sale (x{{nft?.forSale?.quantity}}) - {{nft?.forSale?.hbarAmount}} ℏ-->
-<!--    </span>-->
+    <!--    <span class='absolute top-0 right-0 py-1 px-2 mt-2 mr-2 bg-blue-800 rounded text-xs text-white'-->
+    <!--          *ngIf='nft?.nftIdsForSale'>-->
+    <!--      For Sale (x{{nft?.forSale?.quantity}}) - {{nft?.forSale?.hbarAmount}} ℏ-->
+    <!--    </span>-->
   </div>
   <div class='flex mb-6 justify-between items-center'>
     <div>
@@ -31,17 +31,23 @@
   <div class='flex mb-2 justify-between items-center'>
     <h4 class='text-xs font-medium'>Supply</h4>
     <span class='inline-block py-1 px-2 rounded-full text-xs text-green-500'>
-      {{nft?.supply || 'Not Defined' }}
+      x{{nft?.supply || 'Not Defined' }}
     </span>
   </div>
-  <div class='flex mb-2 justify-between items-center'>
-    <h4 class='text-xs font-medium'>IPFS File</h4>
-    <span class='inline-block py-1 px-2 rounded-full text-xs text-green-500'>
-      <a [href]='nft?.url' *ngIf='nft?.url' target='_blank'>Open</a>
-    </span>
+  <!--  <div class='flex mb-2 justify-between items-center'>-->
+  <!--    <h4 class='text-xs font-medium'>IPFS File</h4>-->
+  <!--    <span class='inline-block py-1 px-2 rounded-full text-xs text-green-500'>-->
+  <!--      <a [href]='nft?.url' *ngIf='nft?.url' target='_blank'>Open</a>-->
+  <!--    </span>-->
+  <!--  </div>-->
+  <div class='flex mb-2 justify-between items-center' *ngIf='royalties'>
+    <h4 class='text-xs font-medium'>Royalties</h4>
+    <p class='block py-1 px-2 rounded-full text-xs text-green-500'>
+      {{royalties}} %
+    </p>
   </div>
   <div class='flex mb-2 justify-between items-center' *ngIf='nft?.nftIdsForSale'>
-    <h4 class='text-xs font-medium'>Checkout URL</h4>
+    <h4 class='text-xs font-medium'>Checkout URL (x{{nft?.nftIdsForSale.length}})</h4>
     <span class='text-xs text-blue-500 font-medium'>
        <ng-multiselect-dropdown
          [settings]='dropdownSettings'
@@ -65,8 +71,9 @@
        (click)='sellHandler(nft)'>
       Update
     </a>
-    <a *ngIf='nft?.nftIdsForSale' class='ml-2 py-2 px-3 bg-blue-800 rounded-md text-xs text-white transition duration-200 cursor-pointer'
-       routerLink='/checkout/{{nft.tokenId}}/{{selectedItems[0]}}' target='_blank'>Go to Checkout</a>
+    <a *ngIf='nft?.nftIdsForSale'
+       class='ml-2 py-2 px-3 bg-blue-800 rounded-md text-xs text-white transition duration-200 cursor-pointer'
+       (click)='redirectCheckout(nft.tokenId,user.accountId ,selectedItems[0])' target='_blank'>Go to Checkout</a>
     <ng-template #sell>
       <a
         class='ml-2 py-2 px-3 font-bold dark:text-gray-800 bg-xact rounded-md text-xs text-white transition duration-200 cursor-pointer'

@@ -16,8 +16,8 @@ export class SdkService {
       apiKey: this.appConfig.sdkApi,
       options: {
         debugLevel: DebugLevel.DEBUG,
-        apiUrl: 'https://xactapi.net/v1',
-        socketUrl: 'https://xactapi.net',
+        apiUrl: 'https://api.xact.ac/v1',
+        socketUrl: 'https://api.xact.ac',
       },
     })
     await this.client.initConnexion()

@@ -1,9 +1,10 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core'
+import { Component, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core'
 import { ActivatedRoute, Router } from '@angular/router'
-import { Observable, tap } from 'rxjs'
+import { catchError, Observable, of, tap } from 'rxjs'
 import { NFTForSale } from '@xact-wallet-sdk/client'
 import { ConnectService } from '@xact-checkout/shared/ui/connect'
 import { HomeTileComponent } from '../../../home/ui/tile/src/lib/home-tile.component'
+import { NgxSpinnerService } from 'ngx-spinner'
 
 @Component({
   selector: 'xact-checkout-checkout',
@@ -20,21 +21,29 @@ import { HomeTileComponent } from '../../../home/ui/tile/src/lib/home-tile.compo
 export class CheckoutComponent {
   tokenId: string;
   nftId: string;
+  accountId: string;
   nft$!: Observable<any>
   type!: string
   emptyNFT = false
-
+  royalties = 0;
   constructor(private readonly route: ActivatedRoute,
               private readonly connectService: ConnectService,
+              private readonly cd: ChangeDetectorRef,
+              private readonly spinner: NgxSpinnerService,
               private readonly router: Router) {
+    this.spinner.show().catch();
     this.tokenId = this.route.snapshot.paramMap.get('tokenId') as string;
+    this.accountId = this.route.snapshot.paramMap.get('accountId') as string;
     this.nftId = this.route.snapshot.paramMap.get('nftId') as string;
     if (!this.tokenId) {
       this.router.navigate(['/'])
       return
     } else {
-      this.nft$ = this.connectService.getNFTForSale(this.tokenId, this.nftId).pipe(
-        tap(nft => {
+      this.nft$ = this.connectService.getNFTForSale(this.tokenId,this.accountId, this.nftId).pipe(
+        tap((nft: any) => {
+          if (Array.isArray(nft.nft.royalties)) {
+            this.royalties = +nft.nft.royalties.map((el: any) => el.numerator).reduce((a: number, b: number) => a + b, 0)
+          }
           if (nft) {
             HomeTileComponent.getTypeNft(nft.media).then((type)=>{
               this.type = type;
@@ -42,7 +51,14 @@ export class CheckoutComponent {
           } else {
             this.emptyNFT = true;
           }
+          this.spinner.hide().catch();
+          this.cd.detectChanges();
         }),
+        catchError(err => {
+          this.spinner.hide().catch();
+          this.emptyNFT = true;
+          return of(err);
+        })
       )
     }
   }

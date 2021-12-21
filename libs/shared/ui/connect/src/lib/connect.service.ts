@@ -102,9 +102,9 @@ export class ConnectService {
     }).toPromise()
   }
 
-  getNFTForSale(tokenId: string, nftId: string): Observable<NFTForSale & { media: string } | null> {
-    return this.http.get<NFTForSale>(`${environment.API}/sdk/nft-for-sale?tokenId=${tokenId}&nftId=${nftId}`).pipe(
-      switchMap(res => {
+  getNFTForSale(tokenId: string,sellerAccountId: string, nftId?: string): Observable<NFTForSale & { media: string } | null> {
+    return this.http.get<NFTForSale>(`${environment.API}/sdk/nft-for-sale?tokenId=${tokenId}&sellerAccountId=${sellerAccountId}&nftId=${nftId}`).pipe(
+      switchMap((res: any) => {
         if (!res.nft) {
           return of(null)
         }

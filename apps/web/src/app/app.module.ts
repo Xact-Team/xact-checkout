@@ -9,6 +9,7 @@ import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io'
 import { ToastrModule } from 'ngx-toastr'
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2'
 import { environment } from '@xact-checkout/root/environments'
+import { NgxSpinnerModule } from 'ngx-spinner'
 
 const config: SocketIoConfig = {
   url: environment.API_SOCKET, options: {
@@ -36,6 +37,7 @@ const config: SocketIoConfig = {
     ToastrModule.forRoot({
       preventDuplicates: true,
     }),
+    NgxSpinnerModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

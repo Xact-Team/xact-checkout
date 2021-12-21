@@ -5,7 +5,7 @@ import { NavItem } from '@xact-checkout/shared/data-access/models'
 import { UserStore } from '@xact-checkout/shared/data-access/user-store'
 import { BehaviorSubject, map, take } from 'rxjs'
 import { ToastrService } from 'ngx-toastr'
-import { UserAccount } from '@xact-wallet-sdk/client'
+import { NgxSpinnerService } from 'ngx-spinner'
 
 @Component({
   selector: 'xact-checkout-header',
@@ -29,10 +29,13 @@ export class HeaderComponent {
   constructor(private readonly service: UiStore,
               private readonly userStore: UserStore,
               private readonly toastService: ToastrService,
+              private readonly spinner: NgxSpinnerService,
               private readonly connectService: ConnectService) {
-    this.user$.pipe(take(1)).toPromise().then(async (user: any)=>{
-      if (user)
-        await this.refresh(user.accountId);
+    this.user$.pipe(take(1)).toPromise().then(async (user: any) => {
+      if (user) {
+        this.spinner.show().catch()
+        await this.refresh(user.accountId)
+      }
     })
   }
 
@@ -58,8 +61,10 @@ export class HeaderComponent {
       const user = await this.connectService.refreshNFT(accountId)
       user && this.userStore.setUserEffect(user)
       this.animateIcon.next(false)
+      this.spinner.hide().catch()
       this.toastService.success('your Account is now up to date')
     } catch (e) {
+      this.spinner.hide().catch()
       this.animateIcon.next(false)
       this.toastService.error('Sorry an internal error occurred!')
       console.error(e)

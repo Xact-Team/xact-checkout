@@ -3,6 +3,8 @@ import { NFT } from '@xact-wallet-sdk/client'
 import { HttpClient } from '@angular/common/http'
 import { map, Observable, of } from 'rxjs'
 import { IDropdownSettings } from 'ng-multiselect-dropdown'
+import { Router } from '@angular/router'
+import { UserStore } from '@xact-checkout/shared/data-access/user-store'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 const mime = require('mime')
@@ -15,12 +17,13 @@ const mime = require('mime')
   ],
 })
 export class HomeTileComponent implements OnInit {
+  user$ = this.userStore.user$;
   @Input() nft!: any;
   @Output() sellNFT: EventEmitter<NFT> = new EventEmitter<NFT>()
 
   media$!: Observable<string>
   type: string | null = null
-  //Multiselect dropdown
+  // Multiselect dropdown
   dropdownList: any = []
   selectedItems: any = [];
   dropdownSettings: IDropdownSettings = {
@@ -32,12 +35,17 @@ export class HomeTileComponent implements OnInit {
     itemsShowLimit: 3,
     allowSearchFilter: true,
   }
-
-  constructor(private readonly http: HttpClient,) {
+  royalties = 0;
+  constructor(private readonly http: HttpClient,
+              private readonly userStore: UserStore,
+              private readonly router: Router) {
   }
 
 
   ngOnInit() {
+    if (Array.isArray(this.nft.royalties)) {
+      this.royalties = +this.nft.royalties.map((el: any) => el.numerator).reduce((a: number, b: number) => a + b, 0)
+    }
     if (this.nft.nftIdsForSale) {
       this.selectedItems.push(this.nft.nftIdsForSale[0].nftId);
       this.dropdownList = this.nft.nftIdsForSale.map((el: any) => el.nftId);
@@ -94,6 +102,14 @@ export class HomeTileComponent implements OnInit {
         return 'https://firebasestorage.googleapis.com/v0/b/xact-wallet.appspot.com/o/public%2Fany.svg?alt=media&token=57a60ead-91ba-4deb-859e-6c45990c4e75'
       default:
         return 'https://firebasestorage.googleapis.com/v0/b/xact-wallet.appspot.com/o/public%2Fany.svg?alt=media&token=57a60ead-91ba-4deb-859e-6c45990c4e75'
+    }
+  }
+
+  redirectCheckout(tokenId: string, accountId: string, selectedItems: any) {
+    if (selectedItems) {
+      window.open(`/checkout/${tokenId}/${accountId}/${selectedItems}`, '_blank');
+    } else {
+      window.open(`/checkout/${tokenId}/${accountId}`, '_blank');
     }
   }
 
