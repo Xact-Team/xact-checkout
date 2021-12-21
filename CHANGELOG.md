@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.6](https://github.com/Xact-Team/xact-checkout/compare/v0.1.5...v0.1.6) (2021-12-21)
+
+
+### Features
+
+* global improvment ([d2edd53](https://github.com/Xact-Team/xact-checkout/commit/d2edd5321595c903de9d1a51a1b88be2bc02dadc))
+
 ### [0.1.5](https://github.com/Xact-Team/xact-checkout/compare/v0.1.4...v0.1.5) (2021-12-18)
 
 
